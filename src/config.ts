@@ -19,15 +19,16 @@ export interface PhaseConfig {
 }
 
 export const DOWNLOAD_PHASES: PhaseConfig[] = [
-  { bytes: 100_000, count: 2, parallel: 1 },
-  { bytes: 1_000_000, count: 4, parallel: 4 },
-  { bytes: 10_000_000, count: 3, parallel: 6 },
-  { bytes: 25_000_000, count: 2, parallel: 6 },
-  { bytes: 100_000_000, count: 1, parallel: 4 },
+  { bytes: 100_000, count: 1, parallel: 1 },
+  { bytes: 1_000_000, count: 2, parallel: 4 },
+  { bytes: 10_000_000, count: 4, parallel: 8 },
+  { bytes: 25_000_000, count: 4, parallel: 8 },
+  { bytes: 100_000_000, count: 4, parallel: 8 },
 ];
 
 export const UPLOAD_PHASES: PhaseConfig[] = [
-  { bytes: 100_000, count: 2, parallel: 1 },
-  { bytes: 1_000_000, count: 4, parallel: 3 },
-  { bytes: 10_000_000, count: 2, parallel: 3 },
+  { bytes: 100_000, count: 1, parallel: 1 },
+  { bytes: 1_000_000, count: 2, parallel: 4 },
+  { bytes: 10_000_000, count: 4, parallel: 6 },
+  { bytes: 25_000_000, count: 4, parallel: 6 },
 ];

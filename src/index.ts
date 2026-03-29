@@ -32,7 +32,7 @@ if (values.help) {
 }
 
 if (values.version) {
-  console.log('wirespeed v1.0.0');
+  console.log('wirespeed v1.1.0');
   process.exit(0);
 }
 
