@@ -17,9 +17,9 @@ const { values } = parseArgs({
 
 if (values.help) {
   console.log(`
-  how-fast - Terminal internet speed test
+  wirespeed - Terminal internet speed test
 
-  Usage: how-fast [options]
+  Usage: wirespeed [options]
 
   Options:
     --json           Output results as JSON
@@ -32,7 +32,7 @@ if (values.help) {
 }
 
 if (values.version) {
-  console.log('how-fast v1.0.0');
+  console.log('wirespeed v1.0.0');
   process.exit(0);
 }
 

@@ -15,7 +15,7 @@ export async function timedDownload(url: string): Promise<TimingResult> {
   const startTime = performance.now();
   const response = await fetch(url, {
     cache: 'no-store',
-    headers: { 'User-Agent': 'how-fast/1.0.0' },
+    headers: { 'User-Agent': 'wirespeed/1.0.0' },
   });
 
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -52,7 +52,7 @@ export async function timedUpload(url: string, payload: Uint8Array): Promise<Tim
     body: Buffer.from(payload),
     cache: 'no-store',
     headers: {
-      'User-Agent': 'how-fast/1.0.0',
+      'User-Agent': 'wirespeed/1.0.0',
       'Content-Type': 'application/octet-stream',
     },
   });

@@ -16,7 +16,7 @@ export function composeFrame(state: LiveUpdate): string {
 
   // Header box
   const headerLines = [
-    colors.header(`how-fast`) + colors.dim(`  v${VERSION}`),
+    colors.header(`wirespeed`) + colors.dim(`  v${VERSION}`),
   ];
   if (state.server) {
     headerLines.push(

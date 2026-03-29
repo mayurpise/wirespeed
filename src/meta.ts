@@ -36,7 +36,7 @@ export async function fetchServerMeta(): Promise<ServerMeta> {
   const defaults: ServerMeta = { colo: '???', city: 'Unknown', ip: '', loc: '' };
 
   try {
-    const traceRes = await fetch(CF_TRACE_URL, { headers: { 'User-Agent': 'how-fast/1.0.0' } });
+    const traceRes = await fetch(CF_TRACE_URL, { headers: { 'User-Agent': 'wirespeed/1.0.0' } });
     if (!traceRes.ok) return defaults;
 
     const traceText = await traceRes.text();
@@ -56,7 +56,7 @@ export async function fetchServerMeta(): Promise<ServerMeta> {
     let city = COLO_CITIES[colo] ?? colo;
     try {
       const locationsRes = await fetch(CF_LOCATIONS_URL, {
-        headers: { 'User-Agent': 'how-fast/1.0.0' },
+        headers: { 'User-Agent': 'wirespeed/1.0.0' },
         signal: AbortSignal.timeout(3000),
       });
       if (locationsRes.ok) {
