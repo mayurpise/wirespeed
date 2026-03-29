@@ -1,0 +1,45 @@
+{
+  "name": "how-fast",
+  "version": "1.0.0",
+  "description": "Terminal internet speed test — download, upload, and latency",
+  "type": "module",
+  "bin": {
+    "how-fast": "./bin/how-fast.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/src/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "speed-test",
+    "bandwidth",
+    "internet",
+    "download",
+    "upload",
+    "latency",
+    "ping",
+    "cli",
+    "terminal",
+    "cloudflare"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "cli-spinners": "^3.2.0",
+    "is-unicode-supported": "^2.1.0",
+    "log-update": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
