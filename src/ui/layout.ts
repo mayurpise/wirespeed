@@ -1,9 +1,8 @@
 import { symbols, colors, latencyColor } from './theme.js';
 import { box, progressBar, getSpinnerFrame } from './components.js';
 import { formatSpeed, formatLatency } from '../stats/units.js';
+import { VERSION } from '../version.js';
 import type { LiveUpdate } from '../tester/types.js';
-
-const VERSION = '1.0.0';
 
 function padRight(str: string, len: number): string {
   const stripped = str.replace(/\x1b\[[0-9;]*m/g, '');

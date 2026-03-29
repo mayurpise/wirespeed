@@ -2,6 +2,7 @@ import { parseArgs } from 'node:util';
 import { Renderer } from './ui/renderer.js';
 import { composePlainResult, composeJson } from './ui/layout.js';
 import { runSpeedTest } from './orchestrator.js';
+import { VERSION } from './version.js';
 import type { LiveUpdate } from './tester/types.js';
 
 const { values } = parseArgs({
@@ -32,7 +33,7 @@ if (values.help) {
 }
 
 if (values.version) {
-  console.log('wirespeed v1.1.0');
+  console.log(`wirespeed v${VERSION}`);
   process.exit(0);
 }
 

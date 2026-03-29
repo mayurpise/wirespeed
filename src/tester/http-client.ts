@@ -1,5 +1,6 @@
 import { performance } from 'node:perf_hooks';
 import { ESTIMATED_SERVER_TIME_MS } from '../config.js';
+import { USER_AGENT } from '../version.js';
 import type { TimingResult } from './types.js';
 
 function parseServerTiming(headers: Headers): number {
@@ -15,7 +16,7 @@ export async function timedDownload(url: string): Promise<TimingResult> {
   const startTime = performance.now();
   const response = await fetch(url, {
     cache: 'no-store',
-    headers: { 'User-Agent': 'wirespeed/1.0.0' },
+    headers: { 'User-Agent': USER_AGENT },
   });
 
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -52,7 +53,7 @@ export async function timedUpload(url: string, payload: Uint8Array): Promise<Tim
     body: Buffer.from(payload),
     cache: 'no-store',
     headers: {
-      'User-Agent': 'wirespeed/1.0.0',
+      'User-Agent': USER_AGENT,
       'Content-Type': 'application/octet-stream',
     },
   });
