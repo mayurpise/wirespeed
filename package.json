@@ -1,6 +1,6 @@
 {
   "name": "@mayurpise/wirespeed",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Terminal internet speed test — download, upload, and latency",
   "author": "mayurpise",
   "repository": {
