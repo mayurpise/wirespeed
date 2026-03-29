@@ -7,7 +7,10 @@ export const LATENCY_REQUESTS = 20;
 export const BANDWIDTH_PERCENTILE = 0.9;
 export const LATENCY_PERCENTILE = 0.5;
 export const MIN_REQUEST_DURATION_MS = 10;
-export const FINISH_REQUEST_DURATION_MS = 1000;
+/** Skip to next phase if any single request exceeds this.
+ *  On a 1 Gbps link with 8 parallel connections, a 100 MB request takes ~5.3s.
+ *  10s gives headroom for gigabit while still bailing on slow links. */
+export const FINISH_REQUEST_DURATION_MS = 10_000;
 export const ESTIMATED_SERVER_TIME_MS = 10;
 export const RENDER_INTERVAL_MS = 80;
 export const EMA_ALPHA = 0.3;
@@ -15,20 +18,20 @@ export const EMA_ALPHA = 0.3;
 export interface PhaseConfig {
   bytes: number;
   count: number;
+  /** Max in-flight requests for this phase. */
   parallel: number;
 }
 
 export const DOWNLOAD_PHASES: PhaseConfig[] = [
-  { bytes: 100_000, count: 1, parallel: 1 },
-  { bytes: 1_000_000, count: 2, parallel: 4 },
-  { bytes: 10_000_000, count: 4, parallel: 8 },
-  { bytes: 25_000_000, count: 4, parallel: 8 },
-  { bytes: 100_000_000, count: 4, parallel: 8 },
+  { bytes: 1_000_000, count: 4, parallel: 4 },       // 4 MB  — warm up TCP windows
+  { bytes: 10_000_000, count: 4, parallel: 8 },       // 40 MB — ramp
+  { bytes: 25_000_000, count: 8, parallel: 8 },       // 200 MB — measure
+  { bytes: 100_000_000, count: 8, parallel: 8 },      // 800 MB — saturate
 ];
 
 export const UPLOAD_PHASES: PhaseConfig[] = [
-  { bytes: 100_000, count: 1, parallel: 1 },
-  { bytes: 1_000_000, count: 2, parallel: 4 },
-  { bytes: 10_000_000, count: 4, parallel: 6 },
-  { bytes: 25_000_000, count: 4, parallel: 6 },
+  { bytes: 1_000_000, count: 4, parallel: 4 },        // 4 MB  — warm up
+  { bytes: 10_000_000, count: 4, parallel: 8 },        // 40 MB — ramp
+  { bytes: 25_000_000, count: 8, parallel: 8 },        // 200 MB — measure
+  { bytes: 100_000_000, count: 4, parallel: 8 },       // 400 MB — saturate
 ];

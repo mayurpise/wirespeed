@@ -26,6 +26,20 @@ export function computeBandwidth(measurements: Measurement[]): number {
   return percentile(valid, BANDWIDTH_PERCENTILE);
 }
 
+/**
+ * Aggregate throughput = total bytes transferred / wall-clock duration.
+ * This is the correct metric when multiple connections run in parallel:
+ * individual request speeds are low (they share bandwidth), but aggregate
+ * reflects the actual link utilization.
+ */
+export function computeAggregateBandwidth(
+  totalBytes: number,
+  wallTimeMs: number,
+): number {
+  if (wallTimeMs <= 0) return 0;
+  return (totalBytes * 8 * 1000) / wallTimeMs;
+}
+
 export function computeMedianLatency(latencies: number[]): number {
   const sorted = [...latencies].sort((a, b) => a - b);
   return percentile(sorted, LATENCY_PERCENTILE);

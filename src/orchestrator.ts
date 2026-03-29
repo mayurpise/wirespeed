@@ -14,20 +14,17 @@ export async function runSpeedTest(
   renderer: Renderer,
   options: RunOptions,
 ): Promise<TestResults> {
-  // Phase: init
   renderer.update({ phase: 'init', progress: 0, currentSpeed: 0 });
 
   const server = await fetchServerMeta();
   renderer.update({ server });
 
-  // Phase: latency
+  // Latency
   renderer.update({ phase: 'latency', progress: 0, currentSpeed: 0 });
-  const latency = await measureLatency((_i, _ms) => {
-    // Could update live latency display here if desired
-  });
+  const latency = await measureLatency((_i, _ms) => {});
   renderer.update({ latency });
 
-  // Phase: download
+  // Download
   let download: TestResults['download'] = null;
   if (!options.noDownload) {
     renderer.update({ phase: 'download', progress: 0, currentSpeed: 0 });
@@ -37,7 +34,7 @@ export async function runSpeedTest(
     renderer.update({ download, progress: 1 });
   }
 
-  // Phase: upload
+  // Upload
   let upload: TestResults['upload'] = null;
   if (!options.noUpload) {
     renderer.update({ phase: 'upload', progress: 0, currentSpeed: 0 });
@@ -47,8 +44,6 @@ export async function runSpeedTest(
     renderer.update({ upload, progress: 1 });
   }
 
-  // Done
   renderer.update({ phase: 'done' });
-
   return { server, latency, download, upload };
 }
