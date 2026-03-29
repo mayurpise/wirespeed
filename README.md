@@ -18,13 +18,13 @@ $ npx wirespeed
 ## Install
 
 ```bash
-npm install -g wirespeed
+npm install -g @mayurpise/wirespeed
 ```
 
 Or run directly:
 
 ```bash
-npx wirespeed
+npx @mayurpise/wirespeed
 ```
 
 ## Usage
