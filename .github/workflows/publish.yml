@@ -1,9 +1,9 @@
 name: Publish to npm
 
+# CI disabled on 2026-04-20 pending billing/scope decisions.
+# Re-enable by restoring the original `on:` triggers from git history.
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch: {}
 
 permissions:
   contents: read

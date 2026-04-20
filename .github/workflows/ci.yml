@@ -1,10 +1,9 @@
 name: CI
 
+# CI disabled on 2026-04-20 pending billing/scope decisions.
+# Re-enable by restoring the original `on:` triggers from git history.
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  workflow_dispatch: {}
 
 jobs:
   build:
