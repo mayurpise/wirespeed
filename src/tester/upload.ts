@@ -1,19 +1,25 @@
 import { performance } from 'node:perf_hooks';
-import { CF_UP_URL, UPLOAD_PHASES, FINISH_REQUEST_DURATION_MS, MIN_REQUEST_DURATION_MS } from '../config.js';
-import { timedUpload } from './http-client.js';
+import {
+  CF_UP_URL,
+  CF_DOWN_URL,
+  UPLOAD_PHASES,
+  FINISH_REQUEST_DURATION_MS,
+  MIN_REQUEST_DURATION_MS,
+  WARMUP_CONNECTIONS,
+} from '../config.js';
+import { timedUpload, warmupConnections } from './http-client.js';
 import { runPool } from './pool.js';
 import { computeAggregateBandwidth, ema } from '../stats/calculator.js';
 import { bpsToMbps } from '../stats/units.js';
-import type { Measurement, BandwidthResult } from './types.js';
-
-function generatePayload(bytes: number): Uint8Array {
-  return new Uint8Array(bytes);
-}
+import type { BandwidthResult } from './types.js';
 
 export async function measureUpload(
   onProgress?: (progress: number, currentSpeedBps: number) => void,
 ): Promise<BandwidthResult> {
-  const allMeasurements: Measurement[] = [];
+  // Pre-warm connections to the upload endpoint
+  // Uses the download endpoint since upload endpoint expects a body
+  await warmupConnections(CF_DOWN_URL, WARMUP_CONNECTIONS);
+
   let liveSpeed = 0;
   let totalRequests = 0;
   let completedRequests = 0;
@@ -25,10 +31,9 @@ export async function measureUpload(
   }
 
   for (const phase of UPLOAD_PHASES) {
-    const payload = generatePayload(phase.bytes);
+    const payload = new Uint8Array(phase.bytes);
     let phaseHitThreshold = false;
     let phaseBytes = 0;
-    const ctx = { bail: false };
 
     const phaseStart = performance.now();
 
@@ -39,16 +44,13 @@ export async function measureUpload(
         ? (timing.bytesTransferred * 8 * 1000) / durationMs
         : 0;
 
-      const m: Measurement = { bytes: timing.bytesTransferred, durationMs, speedBps };
-      allMeasurements.push(m);
-
       if (durationMs >= MIN_REQUEST_DURATION_MS) {
         phaseBytes += timing.bytesTransferred;
       }
 
       if (speedBps > 0) {
         const elapsed = performance.now() - phaseStart;
-        const aggBps = elapsed > 0 ? (phaseBytes * 8 * 1000) / elapsed : 0;
+        const aggBps = computeAggregateBandwidth(phaseBytes, elapsed);
         liveSpeed = liveSpeed === 0 ? aggBps : ema(aggBps, liveSpeed);
       }
       if (durationMs > FINISH_REQUEST_DURATION_MS) {
@@ -57,10 +59,9 @@ export async function measureUpload(
 
       completedRequests++;
       onProgress?.(completedRequests / totalRequests, liveSpeed);
-      return m;
     });
 
-    await runPool(tasks, phase.parallel, ctx);
+    await runPool(tasks, phase.parallel);
 
     const phaseWallMs = performance.now() - phaseStart;
     if (phaseBytes > 0 && phaseWallMs > 0) {
@@ -75,7 +76,6 @@ export async function measureUpload(
     : 0;
 
   return {
-    measurements: allMeasurements,
     speedBps,
     speedMbps: bpsToMbps(speedBps),
   };
