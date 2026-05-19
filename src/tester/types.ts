@@ -6,12 +6,6 @@ export interface TimingResult {
   serverTime: number;
 }
 
-export interface Measurement {
-  bytes: number;
-  durationMs: number;
-  speedBps: number;
-}
-
 export interface LatencyResult {
   measurements: number[];
   median: number;
@@ -19,7 +13,6 @@ export interface LatencyResult {
 }
 
 export interface BandwidthResult {
-  measurements: Measurement[];
   speedBps: number;
   speedMbps: number;
 }

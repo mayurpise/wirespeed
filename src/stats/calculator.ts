@@ -1,5 +1,4 @@
-import type { Measurement } from '../tester/types.js';
-import { MIN_REQUEST_DURATION_MS, BANDWIDTH_PERCENTILE, LATENCY_PERCENTILE, EMA_ALPHA } from '../config.js';
+import { LATENCY_PERCENTILE, EMA_ALPHA } from '../config.js';
 
 export function percentile(sorted: number[], p: number): number {
   if (sorted.length === 0) return 0;
@@ -14,16 +13,6 @@ export function percentile(sorted: number[], p: number): number {
     return sorted[base]! + rest * (next - sorted[base]!);
   }
   return sorted[base]!;
-}
-
-export function computeBandwidth(measurements: Measurement[]): number {
-  const valid = measurements
-    .filter(m => m.durationMs >= MIN_REQUEST_DURATION_MS)
-    .map(m => m.speedBps)
-    .sort((a, b) => a - b);
-
-  if (valid.length === 0) return 0;
-  return percentile(valid, BANDWIDTH_PERCENTILE);
 }
 
 /**
