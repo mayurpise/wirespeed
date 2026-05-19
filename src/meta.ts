@@ -1,4 +1,4 @@
-import { CF_TRACE_URL, CF_LOCATIONS_URL } from './config.js';
+import { CF_TRACE_URL, CF_LOCATIONS_URL, LOCATIONS_FETCH_TIMEOUT_MS } from './config.js';
 import { USER_AGENT } from './version.js';
 import type { ServerMeta } from './tester/types.js';
 
@@ -37,8 +37,14 @@ export async function fetchServerMeta(): Promise<ServerMeta> {
   const defaults: ServerMeta = { colo: '???', city: 'Unknown', ip: '', loc: '' };
 
   try {
-    const traceRes = await fetch(CF_TRACE_URL, { headers: { 'User-Agent': USER_AGENT } });
-    if (!traceRes.ok) return defaults;
+    const traceP = fetch(CF_TRACE_URL, { headers: { 'User-Agent': USER_AGENT } });
+    const locationsP = fetch(CF_LOCATIONS_URL, {
+      headers: { 'User-Agent': USER_AGENT },
+      signal: AbortSignal.timeout(LOCATIONS_FETCH_TIMEOUT_MS),
+    }).catch(() => null);
+
+    const [traceRes, locationsRes] = await Promise.all([traceP, locationsP]);
+    if (!traceRes || !traceRes.ok) return defaults;
 
     const traceText = await traceRes.text();
     const traceMap = new Map<string, string>();
@@ -53,22 +59,18 @@ export async function fetchServerMeta(): Promise<ServerMeta> {
     const ip = traceMap.get('ip') ?? defaults.ip;
     const loc = traceMap.get('loc') ?? defaults.loc;
 
-    // Try locations API first, fall back to built-in map
+    // Locations (best-effort, already parallel; fallback to static map)
     let city = COLO_CITIES[colo] ?? colo;
-    try {
-      const locationsRes = await fetch(CF_LOCATIONS_URL, {
-        headers: { 'User-Agent': USER_AGENT },
-        signal: AbortSignal.timeout(3000),
-      });
-      if (locationsRes.ok) {
+    if (locationsRes && locationsRes.ok) {
+      try {
         const data = await locationsRes.json();
         if (Array.isArray(data)) {
           const match = (data as LocationEntry[]).find(l => l.iata === colo);
           if (match) city = match.city;
         }
+      } catch {
+        // ignore, use map fallback
       }
-    } catch {
-      // Use fallback map
     }
 
     return { colo, city, ip, loc };

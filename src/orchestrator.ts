@@ -3,7 +3,7 @@ import { measureLatency } from './tester/latency.js';
 import { measureDownload } from './tester/download.js';
 import { measureUpload } from './tester/upload.js';
 import { Renderer } from './ui/renderer.js';
-import type { TestResults, LiveUpdate } from './tester/types.js';
+import type { TestResults } from './tester/types.js';
 
 export interface RunOptions {
   noDownload: boolean;
@@ -21,7 +21,7 @@ export async function runSpeedTest(
 
   // Latency
   renderer.update({ phase: 'latency', progress: 0, currentSpeed: 0 });
-  const latency = await measureLatency((_i, _ms) => {});
+  const latency = await measureLatency();
   renderer.update({ latency });
 
   // Download
