@@ -34,8 +34,4 @@ export class Renderer {
     logUpdate(composeFrame(this.state));
     logUpdate.done();
   }
-
-  getState(): LiveUpdate {
-    return { ...this.state };
-  }
 }

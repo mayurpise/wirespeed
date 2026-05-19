@@ -1,11 +1,11 @@
 import { symbols, colors, latencyColor } from './theme.js';
-import { box, progressBar, getSpinnerFrame } from './components.js';
+import { box, progressBar, getSpinnerFrame, stripAnsi } from './components.js';
 import { formatSpeed, formatLatency } from '../stats/units.js';
 import { VERSION } from '../version.js';
 import type { LiveUpdate } from '../tester/types.js';
 
 function padRight(str: string, len: number): string {
-  const stripped = str.replace(/\x1b\[[0-9;]*m/g, '');
+  const stripped = stripAnsi(str);
   const pad = Math.max(0, len - stripped.length);
   return str + ' '.repeat(pad);
 }

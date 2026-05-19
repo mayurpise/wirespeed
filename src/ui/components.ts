@@ -44,7 +44,7 @@ export function box(lines: string[], width = 40): string {
   return [top, ...rows, bottom].join('\n');
 }
 
-function stripAnsi(str: string): string {
+export function stripAnsi(str: string): string {
   // eslint-disable-next-line no-control-regex
   return str.replace(/\x1b\[[0-9;]*m/g, '');
 }
