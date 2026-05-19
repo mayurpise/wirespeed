@@ -5,7 +5,7 @@ Fast, zero-dependency internet speed test for the terminal. Measures download, u
 ```
 $ npx wirespeed
 
-  wirespeed v1.0.0
+  wirespeed v1.2.1
 
   Server    Cloudflare — Mumbai (BOM)
   IP        203.0.113.42
@@ -54,10 +54,10 @@ wirespeed --json | jq .
 
 ```json
 {
-  "server": { "colo": "BOM", "city": "Mumbai", "ip": "203.0.113.42" },
-  "latency": { "median": 12.34, "jitter": 1.23, "unit": "ms" },
-  "download": { "speed": 245.67, "unit": "Mbps" },
-  "upload": { "speed": 98.12, "unit": "Mbps" }
+  "server": { "colo": "BOM", "city": "Mumbai", "ip": "203.0.113.42", "loc": "IN" },
+  "latency": { "median_ms": 12.34, "jitter_ms": 1.23 },
+  "download": { "speed_bps": 245670000, "speed_mbps": 245.67 },
+  "upload": { "speed_bps": 98120000, "speed_mbps": 98.12 }
 }
 ```
 
@@ -70,7 +70,7 @@ wirespeed uses Cloudflare's speed test infrastructure (`speed.cloudflare.com`):
 3. **Download** — Multi-phase parallel requests with increasing payload sizes (100KB to 100MB)
 4. **Upload** — Multi-phase parallel uploads (100KB to 10MB)
 
-Bandwidth is calculated at the 90th percentile across all measurements for accuracy. Real-time speed is smoothed with an exponential moving average.
+Bandwidth is the maximum per-phase aggregate throughput (total bytes over wall-clock time across parallel streams) for accuracy under parallel load. Real-time UI speed is smoothed with an exponential moving average. (Individual per-request percentiles are collected but not used for the final reported speed.)
 
 ## Requirements
 
