@@ -78,3 +78,24 @@ export async function timedUpload(url: string, payload: Uint8Array): Promise<Tim
     serverTime,
   };
 }
+
+/**
+ * Effective one-way latency derived from TTFB for zero-byte probes.
+ * Subtracts estimated server processing time.
+ */
+export function getLatencyMs(timing: TimingResult): number {
+  const latencyMs = (timing.ttfb - timing.startTime) - timing.serverTime;
+  return Math.max(0, latencyMs);
+}
+
+/**
+ * Duration used for per-request and phase bandwidth calculation.
+ * For downloads: body transfer time after first byte received (excludes TTFB).
+ * For uploads: full client wall time minus server processing (no meaningful TTFB).
+ */
+export function getTransferDurationMs(timing: TimingResult, isDownload: boolean): number {
+  if (isDownload) {
+    return timing.endTime - timing.ttfb;
+  }
+  return (timing.endTime - timing.startTime) - timing.serverTime;
+}

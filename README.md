@@ -1,14 +1,13 @@
 # wirespeed
 
-Fast, zero-dependency internet speed test for the terminal. Measures download, upload, and latency using Cloudflare's global edge network.
+Fast, lightweight internet speed test for the terminal. Measures download, upload, and latency using Cloudflare's global edge network. (A few small UI dependencies; no third-party speedtest libraries.)
 
 ```
 $ npx wirespeed
 
   wirespeed v1.2.1
 
-  Server    Cloudflare — Mumbai (BOM)
-  IP        203.0.113.42
+  Server: Cloudflare BOM (Mumbai)
 
   Latency   12.34 ms (jitter: 1.23 ms)
   Download  245.67 Mbps
@@ -65,12 +64,12 @@ wirespeed --json | jq .
 
 wirespeed uses Cloudflare's speed test infrastructure (`speed.cloudflare.com`):
 
-1. **Server detection** — Identifies the nearest Cloudflare edge via `/cdn-cgi/trace`
-2. **Latency** — 20 zero-byte round trips, reports median and jitter
-3. **Download** — Multi-phase parallel requests with increasing payload sizes (100KB to 100MB)
-4. **Upload** — Multi-phase parallel uploads (100KB to 10MB)
+1. **Server detection** — Identifies the nearest Cloudflare edge via `/cdn-cgi/trace` (with best-effort city lookup)
+2. **Latency** — 20 zero-byte round trips (concurrent), reports median and jitter
+3. **Download** — Multi-phase parallel requests with increasing payload sizes (1 MB → 25 MB)
+4. **Upload** — Multi-phase parallel uploads (1 MB → 25 MB)
 
-Bandwidth is the maximum per-phase aggregate throughput (total bytes over wall-clock time across parallel streams) for accuracy under parallel load. Real-time UI speed is smoothed with an exponential moving average. (Individual per-request percentiles are collected but not used for the final reported speed.)
+Bandwidth is the maximum per-phase aggregate throughput (total bytes over wall-clock time across parallel streams) for accuracy under parallel load. Real-time UI speed is smoothed with an exponential moving average. (See BANDWIDTH_PHASES in config for exact ramp.) Individual per-request samples are used only for live progress/EMA; the final speed is the best phase aggregate.
 
 ## Requirements
 

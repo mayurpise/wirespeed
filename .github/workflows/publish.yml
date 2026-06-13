@@ -22,7 +22,10 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Verify CLI runs
-        run: node dist/src/index.js --version
+        run: |
+          node dist/src/index.js --version
+          # Exercise meta + latency + JSON/non-TTY path (no heavy bandwidth, safe for CI)
+          node dist/src/index.js --json --no-download --no-upload
       - run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

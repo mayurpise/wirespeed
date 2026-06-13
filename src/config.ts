@@ -14,11 +14,11 @@ export const ESTIMATED_SERVER_TIME_MS = 10;
 export const RENDER_INTERVAL_MS = 80;
 export const EMA_ALPHA = 0.3;
 
-/** Number of zero-byte requests to pre-warm connections before measurement. */
-export const WARMUP_CONNECTIONS = 8;
-
 /** Timeout for the optional locations API call used to enrich colo city name. */
 export const LOCATIONS_FETCH_TIMEOUT_MS = 3000;
+
+/** Timeout for the Cloudflare /cdn-cgi/trace meta fetch. */
+export const TRACE_FETCH_TIMEOUT_MS = 5000;
 
 export interface PhaseConfig {
   bytes: number;

@@ -1,4 +1,4 @@
-import { CF_TRACE_URL, CF_LOCATIONS_URL, LOCATIONS_FETCH_TIMEOUT_MS } from './config.js';
+import { CF_TRACE_URL, CF_LOCATIONS_URL, LOCATIONS_FETCH_TIMEOUT_MS, TRACE_FETCH_TIMEOUT_MS } from './config.js';
 import { USER_AGENT } from './version.js';
 import type { ServerMeta } from './tester/types.js';
 
@@ -37,7 +37,10 @@ export async function fetchServerMeta(): Promise<ServerMeta> {
   const defaults: ServerMeta = { colo: '???', city: 'Unknown', ip: '', loc: '' };
 
   try {
-    const traceP = fetch(CF_TRACE_URL, { headers: { 'User-Agent': USER_AGENT } });
+    const traceP = fetch(CF_TRACE_URL, {
+      headers: { 'User-Agent': USER_AGENT },
+      signal: AbortSignal.timeout(TRACE_FETCH_TIMEOUT_MS),
+    });
     const locationsP = fetch(CF_LOCATIONS_URL, {
       headers: { 'User-Agent': USER_AGENT },
       signal: AbortSignal.timeout(LOCATIONS_FETCH_TIMEOUT_MS),

@@ -7,7 +7,6 @@ export interface TimingResult {
 }
 
 export interface LatencyResult {
-  measurements: number[];
   median: number;
   jitter: number;
 }

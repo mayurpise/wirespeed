@@ -39,19 +39,18 @@ if (values.version) {
 
 const isInteractive = process.stdout.isTTY && !values.json;
 
-const renderer = new Renderer();
-
-if (isInteractive) {
+const renderer = isInteractive ? new Renderer() : undefined;
+if (renderer) {
   renderer.start();
 }
 
 try {
   const results = await runSpeedTest(renderer, {
-    noDownload: values['no-download'] ?? false,
-    noUpload: values['no-upload'] ?? false,
+    noDownload: values['no-download'],
+    noUpload: values['no-upload'],
   });
 
-  if (isInteractive) {
+  if (isInteractive && renderer) {
     renderer.stop();
   } else {
     const finalState: LiveUpdate = {
@@ -71,7 +70,9 @@ try {
     }
   }
 } catch (err) {
-  if (isInteractive) renderer.stop();
+  if (isInteractive && renderer) {
+    renderer.stop();
+  }
   console.error('Speed test failed:', err instanceof Error ? err.message : err);
   process.exit(1);
 }
